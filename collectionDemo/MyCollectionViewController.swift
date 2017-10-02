@@ -8,6 +8,7 @@
 
 import UIKit
 import Foundation
+import Kingfisher
 
 private let reuseIdentifier = "MyCell"
 
@@ -117,11 +118,10 @@ class MyCollectionViewController: UICollectionViewController {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MyCell", for: indexPath as IndexPath)
     
         // Configure the cell
-        if let url = URL(string: urlsArray[indexPath.row]){
-            if let data = NSData(contentsOf: url){
-                imageView.image = UIImage(data: data)
-            }
-        }
+        let imageUrl = NSURL(string: "\(urlsArray[1])")
+        //error with line below, "value of type uicollectionviewcell has no member imageView"
+        cell.imageView.kf_setImageWithURL(imageUrl!)
+            
         return cell
     }
 
