@@ -13,10 +13,16 @@ import Kingfisher
 private let reuseIdentifier = "MyCell"
 
 class MyCollectionViewController: UICollectionViewController {
+    
+    
+    @IBOutlet var myCollectionView: UICollectionView!
+    
+    
     //MARK: Private Variables
     //contains titles of urls obtained from parsing json, should be the names? might need to add .png to all of them.
     var titlesArray = [String]()
-    var urlsArray = [String]()
+    //var urlsArray = [String]()
+    var urlsArray = ["https://www.reddit.com/r/EarthPorn/comments/71lzef/join_other_redditors_traveling_to_washington_dc/", "https://i.redd.it/ybp6bv0b9upz.jpg", "https://i.redd.it/w7mvzief2wpz.jpg", "https://i.redd.it/rvhmimtjzqpz.jpg", "https://i.redd.it/1r8ycu15cspz.jpg", "https://i.redd.it/e7fav7ow3xpz.jpg", "https://i.redd.it/qm3qjqnqkupz.jpg", "https://i.redd.it/aanfpkbaaxpz.jpg", "https://i.redd.it/t9qyqhacqwpz.jpg", "https://i.redd.it/17bne1f1rwpz.jpg", "http://www.siddharthprem.com/Galleries/Greenland/i-qLZbFfN/0/4b8b6175/XL/IMG_0505-web-XL.jpg", "https://i.redd.it/lx8i66nvzwpz.jpg", "https://i.imgur.com/HA0jzr6.jpg", "https://imgur.com/Akoysyz", "https://i.redd.it/hlov4db70xpz.jpg", "https://imgur.com/R52r1ka", "https://i.redd.it/bddlmg8t3xpz.jpg", "https://i.imgur.com/cjWPe97.jpg", "https://i.imgur.com/F5a3avH.jpg", "https://i.redd.it/6senmrjalxpz.jpg", "https://i.redd.it/h74bjsyu7vpz.jpg"]
     var imageArray = [UIImage]()
     //MARK: Private Functions
     
@@ -38,8 +44,6 @@ class MyCollectionViewController: UICollectionViewController {
                         return
                     }
                     
-                    // var urlsArray = [String]()
-                    // var titlesArray = [String]()
                     if let dataDic = json["data"] as? [String:AnyObject],
                         let dataArray = dataDic["children"] as? [[String:AnyObject]]{
                         for index in 0...20{
@@ -59,9 +63,7 @@ class MyCollectionViewController: UICollectionViewController {
         task.resume()
     }
     //Function to create an image from a url, and then append to array of UIImages?
-    func setImageFromUrl(StringContainingUrl url: String){
-        
-    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         //configure images to be stored in a nsurlcache
@@ -70,19 +72,13 @@ class MyCollectionViewController: UICollectionViewController {
 //        let urlCache = NSURLCache(memoryCapacity: memoryCapacity, diskCapacity, diskCapacity: "myDiskPath")
 //        NSURLCache.setSharedURLCache(urlCache)
         
-        var subReddit: String = "https://reddit.com/r/earthPorn/.json"
-        getHttpRequest(UrlStringOfSubreddit: subReddit)
+//        var subReddit: String = "https://reddit.com/r/earthPorn/.json"
+//        getHttpRequest(UrlStringOfSubreddit: subReddit)
+//        gets rid of first url, which is some random ad promo on page
+        //urlsArray.remove(at: 0)
         //calling above function will instantiate urlsArray to be an array of urls of images.
         //then must figure out how to turn urls into images.
 
-        // Do any additional setup after loading the view.
-        //add .png to titles of all title values
-//        for i in 0...titlesArray.count {
-//            titlesArray[i] += ".png"
-//        }
-//        for i in 0...urlsArray.count {
-//            
-//        }
         
     }
 
@@ -115,45 +111,13 @@ class MyCollectionViewController: UICollectionViewController {
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MyCell", for: indexPath as IndexPath)
-    
-        // Configure the cell
-        let imageUrl = NSURL(string: "\(urlsArray[1])")
-        //error with line below, "value of type uicollectionviewcell has no member imageView"
-        cell.imageView.kf_setImageWithURL(imageUrl!)
-            
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MyCell", for: indexPath) as! MyCollectionViewCell
+        
+        let resource = ImageResource(downloadURL: URL(string: urlsArray[indexPath.row])!, cacheKey: urlsArray[indexPath.row])
+        cell.imageView.kf.setImage(with: resource)
         return cell
     }
 
-    // MARK: UICollectionViewDelegate
 
-    /*
-    // Uncomment this method to specify if the specified item should be highlighted during tracking
-    override func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment this method to specify if the specified item should be selected
-    override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-    override func collectionView(_ collectionView: UICollectionView, shouldShowMenuForItemAt indexPath: IndexPath) -> Bool {
-        return false
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, canPerformAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
-        return false
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, performAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) {
-    
-    }
-    */
 
 }

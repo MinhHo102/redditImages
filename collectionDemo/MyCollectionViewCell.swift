@@ -7,9 +7,11 @@
 //
 
 import UIKit
+import Kingfisher
 import Foundation
 
 class MyCollectionViewCell: UICollectionViewCell {
+    
     @IBOutlet weak var imageView: UIImageView!
     
 

@@ -37,21 +37,25 @@
                                     </subviews>
                                 </view>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="1JV-Ql-NVu" secondAttribute="trailing" id="CXw-Zv-nOt"/>
-                                    <constraint firstItem="1JV-Ql-NVu" firstAttribute="leading" secondItem="hAy-qq-QXy" secondAttribute="leading" id="Jsl-XW-k7B"/>
-                                    <constraint firstAttribute="bottom" secondItem="1JV-Ql-NVu" secondAttribute="bottom" id="Pe8-qy-jWh"/>
-                                    <constraint firstItem="1JV-Ql-NVu" firstAttribute="top" secondItem="hAy-qq-QXy" secondAttribute="top" id="QpK-O7-UQ6"/>
+                                    <constraint firstAttribute="trailing" secondItem="1JV-Ql-NVu" secondAttribute="trailing" id="00I-sc-7dC"/>
+                                    <constraint firstItem="1JV-Ql-NVu" firstAttribute="leading" secondItem="hAy-qq-QXy" secondAttribute="leading" id="U9Y-0a-cjJ"/>
+                                    <constraint firstAttribute="bottom" secondItem="1JV-Ql-NVu" secondAttribute="bottom" id="Zoz-dA-odb"/>
+                                    <constraint firstItem="1JV-Ql-NVu" firstAttribute="top" secondItem="hAy-qq-QXy" secondAttribute="top" id="mwA-vI-sXL"/>
                                 </constraints>
                                 <connections>
-                                    <outlet property="imageView" destination="1JV-Ql-NVu" id="SMz-sl-aoM"/>
+                                    <outlet property="imageView" destination="1JV-Ql-NVu" id="sGk-F9-g5m"/>
                                 </connections>
                             </collectionViewCell>
                         </cells>
                         <connections>
-                            <outlet property="dataSource" destination="FBl-X8-mtR" id="OSL-oN-j1P"/>
-                            <outlet property="delegate" destination="FBl-X8-mtR" id="Fwd-cc-yMj"/>
+                            <outlet property="dataSource" destination="FBl-X8-mtR" id="7fb-Fc-tMW"/>
+                            <outlet property="delegate" destination="FBl-X8-mtR" id="BPi-jW-FPV"/>
                         </connections>
                     </collectionView>
+                    <connections>
+                        <outlet property="collectionView" destination="tp2-ZU-eE4" id="UMC-5d-3AY"/>
+                        <outlet property="myCollectionView" destination="tp2-ZU-eE4" id="NSQ-XC-kBv"/>
+                    </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dsk-cb-28l" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
