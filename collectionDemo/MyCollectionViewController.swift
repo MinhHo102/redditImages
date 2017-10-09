@@ -9,25 +9,47 @@
 import UIKit
 import Foundation
 import Kingfisher
+import Alamofire
+import SwiftyJSON
 
+//struct ImageCell: Decodable {
+//    let title: String
+//    let imageUrl: String
+//    let subreddit: String
+//
+//    init(json: [String:AnyObject]) {
+//        title = json["title"] as? String ?? ""
+//        imageUrl = json["url"] as? String ?? ""
+//        subreddit = json["subreddit"] as? String ?? ""
+//    }
+//}
 private let reuseIdentifier = "MyCell"
 
-class MyCollectionViewController: UICollectionViewController {
+class MyCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
     
     @IBOutlet var myCollectionView: UICollectionView!
     
+//    let queue = DispatchQueue(label: "MyDispatchQueueLabel")
+    
     
     //MARK: Private Variables
-    //contains titles of urls obtained from parsing json, should be the names? might need to add .png to all of them.
+    
     var titlesArray = [String]()
-    //var urlsArray = [String]()
-    var urlsArray = ["https://www.reddit.com/r/EarthPorn/comments/71lzef/join_other_redditors_traveling_to_washington_dc/", "https://i.redd.it/ybp6bv0b9upz.jpg", "https://i.redd.it/w7mvzief2wpz.jpg", "https://i.redd.it/rvhmimtjzqpz.jpg", "https://i.redd.it/1r8ycu15cspz.jpg", "https://i.redd.it/e7fav7ow3xpz.jpg", "https://i.redd.it/qm3qjqnqkupz.jpg", "https://i.redd.it/aanfpkbaaxpz.jpg", "https://i.redd.it/t9qyqhacqwpz.jpg", "https://i.redd.it/17bne1f1rwpz.jpg", "http://www.siddharthprem.com/Galleries/Greenland/i-qLZbFfN/0/4b8b6175/XL/IMG_0505-web-XL.jpg", "https://i.redd.it/lx8i66nvzwpz.jpg", "https://i.imgur.com/HA0jzr6.jpg", "https://imgur.com/Akoysyz", "https://i.redd.it/hlov4db70xpz.jpg", "https://imgur.com/R52r1ka", "https://i.redd.it/bddlmg8t3xpz.jpg", "https://i.imgur.com/cjWPe97.jpg", "https://i.imgur.com/F5a3avH.jpg", "https://i.redd.it/6senmrjalxpz.jpg", "https://i.redd.it/h74bjsyu7vpz.jpg"]
-    var imageArray = [UIImage]()
+    var urlsArray = [String]()
+    //var urlsArray = ["https://i.redd.it/ywtk0y0e3oqz.jpg", "https://i.redd.it/y36cnr2ymoqz.jpg", "https://i.redd.it/ut1mgyvq2lqz.jpg", "https://i.imgur.com/j6KWkym.jpg", "https://i.redd.it/ruqhcte17mqz.jpg", "https://i.redd.it/b192zb3uxjqz.jpg", "https://i.redd.it/530n6c0dimqz.jpg", "http://imgur.com/eGDCVQn", "https://i.redd.it/1eacu94henqz.jpg", "https://i.imgur.com/HLzeMOX.jpg", "https://i.redd.it/qbh9m4gv4pqz.jpg", "https://i.redd.it/fefy1lkzhmqz.jpg", "https://i.redd.it/m0hrdv23nnqz.jpg", "https://www.flickr.com/photos/dornoforpyro/36762558663/", "https://i.redd.it/oriees47rmqz.jpg", "https://i.redd.it/dh4dilocboqz.jpg", "https://i.imgur.com/n6RlwaY.jpg", "https://i.redd.it/5bfkitt8sjqz.jpg", "https://i.redd.it/2496huds6qqz.jpg", "http://www.roadaddiction.com/wp-content/uploads/2017/10/DSC01948b.jpg", "https://i.redd.it/f21mzipf7nqz.jpg"]
+
+    
     //MARK: Private Functions
+
     
     //Function to return json of given subreddit, parse urls, and add urls to private Array
-    func getHttpRequest(UrlStringOfSubreddit: String){
+    func getHttpRequest(UrlStringOfSubreddit: String, completion: @escaping (Bool, Any?, Error?)->Void){
+        
+//        var titlesArray = [String]()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0){
+        var urls = [String]()
         guard let url = URL(string: UrlStringOfSubreddit) else {
             return
         }
@@ -48,40 +70,60 @@ class MyCollectionViewController: UICollectionViewController {
                         let dataArray = dataDic["children"] as? [[String:AnyObject]]{
                         for index in 0...20{
                             let url = dataArray[index]["data"]!["url"]! as! String
-                            let title = dataArray[index]["data"]!["title"]! as! String
-                            self.urlsArray.append(url)
-                            self.titlesArray.append(title)
+//                            let title = dataArray[index]["data"]!["title"]! as! String
+                            urls.append(url)
+//                            self.titlesArray.append(title)
+                            
+                            
                         }
-                        print(self.urlsArray)
+//                        print(self.urlsArray)
                         print("\n")
-                        print(self.titlesArray)
+//                        print(self.titlesArray)
+                        completion(true, urls, nil)
                     }
                     
                 }
             }
         }
+        
         task.resume()
+        
     }
-    //Function to create an image from a url, and then append to array of UIImages?
+        
+}
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //configure images to be stored in a nsurlcache
+//        configure images to be stored in a urlcache
 //        let memoryCapacity = 500 * 1024 * 1024
 //        let diskCapacity = 500 * 1024 * 1024
-//        let urlCache = NSURLCache(memoryCapacity: memoryCapacity, diskCapacity, diskCapacity: "myDiskPath")
-//        NSURLCache.setSharedURLCache(urlCache)
+//        let urlCache = URLCache(memoryCapacity: memoryCapacity, diskCapacity: diskCapacity, diskPath: nil)
+//        URLCache.shared = urlCache
         
-//        var subReddit: String = "https://reddit.com/r/earthPorn/.json"
-//        getHttpRequest(UrlStringOfSubreddit: subReddit)
-//        gets rid of first url, which is some random ad promo on page
-        //urlsArray.remove(at: 0)
-        //calling above function will instantiate urlsArray to be an array of urls of images.
-        //then must figure out how to turn urls into images.
+//        self.collectionView?.delegate = self
+        DispatchQueue.global().async{
+        let UrlStringOfSubreddit = "https://reddit.com/r/earthPorn/.json"
+            self.getHttpRequest(UrlStringOfSubreddit: UrlStringOfSubreddit) { (success, response, error) in
+            if success {
+                guard let urls = response as? [String] else {return}
+//                print("HELLO")
+                self.urlsArray = urls
+//                self.myCollectionView.reloadData()
+                print(self.urlsArray)
+            } else if let error = error {
+                print(error)
+            }
+            
+                DispatchQueue.main.async {
+                    self.myCollectionView.reloadData()
+                }
+            }
+        }
 
-        
+    //    urlsArray.remove(at: 0)
+  
     }
-
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -117,7 +159,10 @@ class MyCollectionViewController: UICollectionViewController {
         cell.imageView.kf.setImage(with: resource)
         return cell
     }
-
-
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let availableWidth = view.frame.width
+        let widthPerItem = (availableWidth) / 3
+        return CGSize(width: widthPerItem-2.5, height: widthPerItem-2.5)
+    }
 
 }
