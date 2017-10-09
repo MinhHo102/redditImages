@@ -9,9 +9,6 @@
 import UIKit
 import Foundation
 import Kingfisher
-import Alamofire
-import SwiftyJSON
-
 //struct ImageCell: Decodable {
 //    let title: String
 //    let imageUrl: String
@@ -37,13 +34,25 @@ class MyCollectionViewController: UICollectionViewController, UICollectionViewDe
     
     var titlesArray = [String]()
     var urlsArray = [String]()
-    //var urlsArray = ["https://i.redd.it/ywtk0y0e3oqz.jpg", "https://i.redd.it/y36cnr2ymoqz.jpg", "https://i.redd.it/ut1mgyvq2lqz.jpg", "https://i.imgur.com/j6KWkym.jpg", "https://i.redd.it/ruqhcte17mqz.jpg", "https://i.redd.it/b192zb3uxjqz.jpg", "https://i.redd.it/530n6c0dimqz.jpg", "http://imgur.com/eGDCVQn", "https://i.redd.it/1eacu94henqz.jpg", "https://i.imgur.com/HLzeMOX.jpg", "https://i.redd.it/qbh9m4gv4pqz.jpg", "https://i.redd.it/fefy1lkzhmqz.jpg", "https://i.redd.it/m0hrdv23nnqz.jpg", "https://www.flickr.com/photos/dornoforpyro/36762558663/", "https://i.redd.it/oriees47rmqz.jpg", "https://i.redd.it/dh4dilocboqz.jpg", "https://i.imgur.com/n6RlwaY.jpg", "https://i.redd.it/5bfkitt8sjqz.jpg", "https://i.redd.it/2496huds6qqz.jpg", "http://www.roadaddiction.com/wp-content/uploads/2017/10/DSC01948b.jpg", "https://i.redd.it/f21mzipf7nqz.jpg"]
 
     
     //MARK: Private Functions
+    /*
+     Sometimes urls doesn't end with an image extension, leaving image blanked when setting it as a view.
+     Solution is to use inout which is basically pass by reference. We pass urlsArray into function, and allows us to look at
+     urls as variables instead of constants
+     */
+    func addExtensionToUrls(urls: inout [String]){
+        for i in 0...24 {
+            if !(urls[i].contains(".jpg") || urls[i].contains(".png")) {
+                urls[i].append(contentsOf: ".jpg")
+            }
+//            print(urls[i])
+        }
+    }
 
     
-    //Function to return json of given subreddit, parse urls, and add urls to private Array
+    //Function to return json of given subreddit, parse for urls, and add urls to Array of Strings
     func getHttpRequest(UrlStringOfSubreddit: String, completion: @escaping (Bool, Any?, Error?)->Void){
         
 //        var titlesArray = [String]()
@@ -59,7 +68,7 @@ class MyCollectionViewController: UICollectionViewController, UICollectionViewDe
                     let json: [String:AnyObject]!
                     do
                     {
-                        json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as! [String:AnyObject]
+                        json = try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as! [String:AnyObject]
                     }
                     catch
                     {
@@ -68,26 +77,19 @@ class MyCollectionViewController: UICollectionViewController, UICollectionViewDe
                     
                     if let dataDic = json["data"] as? [String:AnyObject],
                         let dataArray = dataDic["children"] as? [[String:AnyObject]]{
-                        for index in 0...20{
-                            let url = dataArray[index]["data"]!["url"]! as! String
+                        for i in 0...24{
+                            let url = dataArray[i]["data"]!["url"]! as! String
 //                            let title = dataArray[index]["data"]!["title"]! as! String
                             urls.append(url)
 //                            self.titlesArray.append(title)
-                            
-                            
                         }
-//                        print(self.urlsArray)
-                        print("\n")
-//                        print(self.titlesArray)
                         completion(true, urls, nil)
-                    }
-                    
+//                        print(self.titlesArray)
                 }
             }
         }
-        
+    }
         task.resume()
-        
     }
         
 }
@@ -96,33 +98,28 @@ class MyCollectionViewController: UICollectionViewController, UICollectionViewDe
     override func viewDidLoad() {
         super.viewDidLoad()
 //        configure images to be stored in a urlcache
-//        let memoryCapacity = 500 * 1024 * 1024
-//        let diskCapacity = 500 * 1024 * 1024
-//        let urlCache = URLCache(memoryCapacity: memoryCapacity, diskCapacity: diskCapacity, diskPath: nil)
-//        URLCache.shared = urlCache
+        let memoryCapacity = 500 * 1024 * 1024
+        let diskCapacity = 500 * 1024 * 1024
+        let urlCache = URLCache(memoryCapacity: memoryCapacity, diskCapacity: diskCapacity, diskPath: nil)
+        URLCache.shared = urlCache
         
-//        self.collectionView?.delegate = self
-        DispatchQueue.global().async{
-        let UrlStringOfSubreddit = "https://reddit.com/r/earthPorn/.json"
+//      self.collectionView?.delegate = self ; dont need since we did it in storyboard.
+        let UrlStringOfSubreddit = "https://reddit.com/r/earthPorn/.json?count=25"
             self.getHttpRequest(UrlStringOfSubreddit: UrlStringOfSubreddit) { (success, response, error) in
             if success {
                 guard let urls = response as? [String] else {return}
-//                print("HELLO")
                 self.urlsArray = urls
-//                self.myCollectionView.reloadData()
-                print(self.urlsArray)
+                self.addExtensionToUrls(urls: &self.urlsArray)
+                print("\n")
             } else if let error = error {
-                print(error)
+                print("Http request error: ", error)
             }
             
                 DispatchQueue.main.async {
+                    print(self.urlsArray)
                     self.myCollectionView.reloadData()
                 }
             }
-        }
-
-    //    urlsArray.remove(at: 0)
-  
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -156,6 +153,7 @@ class MyCollectionViewController: UICollectionViewController, UICollectionViewDe
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MyCell", for: indexPath) as! MyCollectionViewCell
         
         let resource = ImageResource(downloadURL: URL(string: urlsArray[indexPath.row])!, cacheKey: urlsArray[indexPath.row])
+        cell.imageView.kf.indicatorType = .activity
         cell.imageView.kf.setImage(with: resource)
         return cell
     }
