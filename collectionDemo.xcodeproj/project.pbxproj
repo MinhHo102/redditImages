@@ -13,6 +13,7 @@
 		0B5A93581F7C78DE00A7A7B6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0B5A93561F7C78DE00A7A7B6 /* LaunchScreen.storyboard */; };
 		0B5A93601F7C79A700A7A7B6 /* MyCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5A935F1F7C79A700A7A7B6 /* MyCollectionViewController.swift */; };
 		0B5A93621F7C7A5100A7A7B6 /* MyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5A93611F7C7A5100A7A7B6 /* MyCollectionViewCell.swift */; };
+		0B6F57AE1F8C46EE0054DD9A /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B6F57AD1F8C46EE0054DD9A /* FirstViewController.swift */; };
 		42AC9B18041AD384B8AF3AEB /* Pods_collectionDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A10FF3A3B1B3A4983672672F /* Pods_collectionDemo.framework */; };
 /* End PBXBuildFile section */
 
@@ -25,6 +26,7 @@
 		0B5A93591F7C78DE00A7A7B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0B5A935F1F7C79A700A7A7B6 /* MyCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyCollectionViewController.swift; sourceTree = "<group>"; };
 		0B5A93611F7C7A5100A7A7B6 /* MyCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyCollectionViewCell.swift; sourceTree = "<group>"; };
+		0B6F57AD1F8C46EE0054DD9A /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
 		87A1904961B683F13917EDD1 /* Pods-collectionDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-collectionDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-collectionDemo/Pods-collectionDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		A10FF3A3B1B3A4983672672F /* Pods_collectionDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_collectionDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F796C51A629F3924FE7E0940 /* Pods-collectionDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-collectionDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-collectionDemo/Pods-collectionDemo.release.xcconfig"; sourceTree = "<group>"; };
@@ -65,6 +67,7 @@
 			children = (
 				0B5A934D1F7C78DE00A7A7B6 /* AppDelegate.swift */,
 				0B5A93511F7C78DE00A7A7B6 /* Main.storyboard */,
+				0B6F57AD1F8C46EE0054DD9A /* FirstViewController.swift */,
 				0B5A93611F7C7A5100A7A7B6 /* MyCollectionViewCell.swift */,
 				0B5A935F1F7C79A700A7A7B6 /* MyCollectionViewController.swift */,
 				0B5A93541F7C78DE00A7A7B6 /* Assets.xcassets */,
@@ -189,14 +192,12 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-collectionDemo/Pods-collectionDemo-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/Kingfisher/Kingfisher.framework",
-				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
+				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Kingfisher.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -228,6 +229,7 @@
 				0B5A93601F7C79A700A7A7B6 /* MyCollectionViewController.swift in Sources */,
 				0B5A934E1F7C78DE00A7A7B6 /* AppDelegate.swift in Sources */,
 				0B5A93621F7C7A5100A7A7B6 /* MyCollectionViewCell.swift in Sources */,
+				0B6F57AE1F8C46EE0054DD9A /* FirstViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -395,6 +397,7 @@
 				0B5A935E1F7C78DE00A7A7B6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -7,8 +7,9 @@
 //
 
 import UIKit
-import Kingfisher
+//import Kingfisher
 import Foundation
+import SDWebImage
 
 class MyCollectionViewCell: UICollectionViewCell {
     
