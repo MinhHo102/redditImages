@@ -5,6 +5,5 @@ use_frameworks!
 target 'collectionDemo' do
 # your other pod
 # ...
-	pod ‘Alamofire’, ‘~> 4.5’
 	pod ’SDWebImage’, ‘~> 4.0’
 end

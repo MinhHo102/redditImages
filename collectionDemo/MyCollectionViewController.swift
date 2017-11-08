@@ -9,17 +9,7 @@
 import UIKit
 import Foundation
 import SDWebImage
-//struct ImageCell: Decodable {
-//    let title: String
-//    let imageUrl: String
-//    let subreddit: String
-//
-//    init(json: [String:AnyObject]) {
-//        title = json["title"] as? String ?? ""
-//        imageUrl = json["url"] as? String ?? ""
-//        subreddit = json["subreddit"] as? String ?? ""
-//    }
-//}
+
 //NOTES: for images not showing up cuz adding extension doesnt work, need scraping etc, just delete from array before putting in collectionview
 private let reuseIdentifier = "MyCell"
 
@@ -38,10 +28,11 @@ class MyCollectionViewController: UICollectionViewController, UICollectionViewDe
     var titlesArray = [String]()
     var urlsArray = [String]()
     var urlsThumbnail = [String]()
-
-    
     //MARK: Private Functions
-
+    
+    func dismissFullScreenImage(_ sender: UITapGestureRecognizer) {
+        sender.view?.removeFromSuperview()
+    }
     
     /*
      Sometimes urls doesn't end with an image extension, leaving image blanked when setting it as a view.
@@ -77,7 +68,7 @@ class MyCollectionViewController: UICollectionViewController, UICollectionViewDe
         }
     }
     //Fuction to swipe left from edge and go backwards from collectionView to UIText
-    func swipeRight(recognizer: UISwipeGestureRecognizer) {
+    func swipeFromEdge(recognizer: UIScreenEdgePanGestureRecognizer) {
         self.performSegue(withIdentifier: "SegueCollectionBack", sender: self)
     }
 
@@ -108,7 +99,7 @@ class MyCollectionViewController: UICollectionViewController, UICollectionViewDe
                     
                     if let dataDic = json["data"] as? [String:AnyObject],
                         let dataArray = dataDic["children"] as? [[String:AnyObject]]{
-                        for i in 0...99{
+                        for i in 0...49{
                             let url = dataArray[i]["data"]!["url"]! as! String
 //                            let title = dataArray[index]["data"]!["title"]! as! String
                             let thumbnail_url = dataArray[i]["data"]!["thumbnail"]! as! String
@@ -131,18 +122,18 @@ class MyCollectionViewController: UICollectionViewController, UICollectionViewDe
     override func viewDidLoad() {
         super.viewDidLoad()
 //        configure images to be stored in a urlcache
-        let recognizer: UISwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector((swipeRight)))
-        recognizer.direction = .right
+        let recognizer: UIScreenEdgePanGestureRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: #selector((swipeFromEdge)))
+        recognizer.edges = .left
+        recognizer.edges = .right
         view.addGestureRecognizer(recognizer)
 //        let memoryCapacity = 500 * 1024 * 1024
 //        let diskCapacity = 500 * 1024 * 1024
 //        let urlCache = URLCache(memoryCapacity: memoryCapacity, diskCapacity: diskCapacity, diskPath: nil)
 //        URLCache.shared = urlCache
-//      self.collectionView?.delegate = self ; dont need since we did it in storyboard.
-        //get rid of spaces at end, usually adds space on iphone after selecting a word.
-//        subRedditString = subRedditString.trimmingCharacters(in: .whitespaces)
-        subRedditString.replacingOccurrences(of: " ", with: "")
-        let UrlStringOfSubreddit = "https://reddit.com/r/" + subRedditString + "/.json?limit=100"
+//      self.collectionView?.delegate = self
+        //get rid of spaces at end, usually adds space on iphone after autocompletingr a word.
+        let subRedditString_new = subRedditString.replacingOccurrences(of: " ", with: "")
+        let UrlStringOfSubreddit = "https://reddit.com/r/" + subRedditString_new + "/.json?limit=50"
             self.getHttpRequest(UrlStringOfSubreddit: UrlStringOfSubreddit) { (success, response, error) in
             if success {
                 guard let urls = response as? [String] else {return}
@@ -151,8 +142,8 @@ class MyCollectionViewController: UICollectionViewController, UICollectionViewDe
                 print("\n")
                 print(self.urlsArray.count)
                 self.addExtensionToUrls(urls: &self.urlsArray)
-                let newCount = self.urlsArray.count - self.countFlickrUrls(urls: &self.urlsArray)
-                self.removeFlickrUrls(urls: &self.urlsArray, newCount: newCount)
+//                let newCount = self.urlsArray.count - self.countFlickrUrls(urls: &self.urlsArray)
+//                self.removeFlickrUrls(urls: &self.urlsArray, newCount: newCount)
                 print("\n")
                 print(self.urlsArray.count)
             } else if let error = error {
@@ -192,7 +183,7 @@ class MyCollectionViewController: UICollectionViewController, UICollectionViewDe
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        return urlsArray.count
+        return urlsThumbnail.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -202,20 +193,30 @@ class MyCollectionViewController: UICollectionViewController, UICollectionViewDe
         //add second parameter specifying placeholder picture
 //        cell.imageView.sd_setImage(with: URL(string: urlsArray[indexPath.row]) )
 //        cell.imageView.sd_setImage(with: URL(string: urlsThumbnail[indexPath.row]) )
-        
+        cell.imageView.sd_setShowActivityIndicatorView(true)
+        cell.imageView.sd_setIndicatorStyle(.gray)
         cell.imageView.sd_setImage(with: URL(string: urlsThumbnail[indexPath.row]), placeholderImage: UIImage(named: "Placeholder.png"))
-
-//        cell.imageView.kf.indicatorType = .activity
-//        cell.imageView.kf.setImage(with: resource)
         
         return cell
+    }
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let fullScreenImage: UIImageView
+        fullScreenImage = UIImageView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height))
+        fullScreenImage.sd_setShowActivityIndicatorView(true)
+        fullScreenImage.sd_setIndicatorStyle(.gray)
+        
+        fullScreenImage.sd_setImage(with: URL(string: urlsArray[indexPath.row]), placeholderImage: UIImage(named: "Placeholder.png"))
+        fullScreenImage.backgroundColor = .black
+        fullScreenImage.contentMode = .scaleAspectFit
+        fullScreenImage.isUserInteractionEnabled = true
+        
+        let tap = UIPanGestureRecognizer(target: self, action: #selector(dismissFullScreenImage))
+        fullScreenImage.addGestureRecognizer(tap)
+        self.view.addSubview(fullScreenImage)
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let availableWidth = view.frame.width
         let widthPerItem = (availableWidth) / 3
-//        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-//        layout.minimumLineSpacing = 20.0
-//        layout.minimumInteritemSpacing = 20.0
         return CGSize(width: widthPerItem-2.5, height: widthPerItem-2.5)
     }
     func collectionView(_ collectionView: UICollectionView,
@@ -228,13 +229,5 @@ class MyCollectionViewController: UICollectionViewController, UICollectionViewDe
                         minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 1.0
     }
-    
-    //TODO: add another segue to allow viewing individual images bigger with horizontal scrolling, add info?-title-etc
-    //find a way to get more json, currently we only get 25 urls... as user scrolls down, scroll up refreshes. gesture recognizers, swipe down, get more urls, swipe up, refresh.
-    //autocomplete subreddit uitextfield, error case doesnt exist.
-    //currently /a/ and /.jpg not working for getting rid of urls with those substrings
-    //also change this: get urls of both images and thumbnails, display latter in collectionview, display full image when touches one at a time. memory usage
-    /*
-     ok so what ive done. added thumbnail array; collectionview looks and displays these values now, they always come back as .jpg, so dont need to parse bad links like before, but for later implementation, if u want to enlarge the picture, we'll get from array of urls not thumbnail, and if we parse, we'll mismatch/unshow photos and thumbnails, so i propose we dont parse, and if it fails to display cuz of non image extension, then we display a default blank image. Code looks messy. Also i added more pictures by setting limit to 100 images at a time.
-     */
+
 }
