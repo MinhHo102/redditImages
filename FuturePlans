@@ -1,0 +1,10 @@
+    TODO: add another segue to allow viewing individual images bigger with horizontal scrolling, add info?-title-etc
+    
+    find a way to get more json as user scrolls down, scroll up refreshes, etc. gesture recognizers, swipe down, get more urls, swipe up, refresh ----- rushed (for now) implementation done, limit changed to 100 from 25 posts.
+    
+    autocomplete subreddit uitextfield, error case doesnt exist.
+    
+    in the future, SDImage lib allows for gifs so maybe we can display gifs when enlarged now, is there backwards compatibility for gifs -> images? or should we just do if else.
+    
+    for now we should do autocomplete with a list of urls from reddit... i think
+    /
